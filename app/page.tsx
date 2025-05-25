@@ -106,6 +106,7 @@ export default function Home() {
         return (
             <main className="container">
                 <h1 className="title">共有されたURL</h1>
+                <h1 className="title">LinkToMe</h1>
                 <form onSubmit={handleLogin} style={{ maxWidth: 320, margin: '2rem auto', textAlign: 'center' }}>
                     <input
                         type="password"
@@ -123,7 +124,7 @@ export default function Home() {
     }
     return (
         <main className="container">
-            <h1 className="title">共有されたURL ({urls.length})</h1>
+            <h1 className="title">LinkToMe - ({urls.length} URLs)</h1>
             <button onClick={downloadTsv} className="download-button">一覧ダウンロード</button>
             <input
                 type="text"

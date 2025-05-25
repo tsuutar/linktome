@@ -1,4 +1,4 @@
-# iPhone から PC へ URL を共有
+# LinkToMe
 
 このアプリは、iPhone の Safari で開いているページ を PC に簡単に送信し、PC 側で一覧・確認・管理できる Web アプリです。
 

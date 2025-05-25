@@ -1,5 +1,5 @@
 export const metadata = {
-  title: '共有されたURL',
+  title: 'LinkToMe',
 }
 
 export default function RootLayout({
