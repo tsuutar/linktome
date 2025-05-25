@@ -1,0 +1,103 @@
+body {
+  font-family: system-ui, sans-serif;
+  background-color: #121212;
+  color: #e0e0e0;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: #1e1e1e;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+.title {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.download-button {
+  display: block;
+  margin: 0 auto 1.5rem;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.download-button:hover {
+  background-color: #1565c0;
+}
+
+.url-list {
+  list-style: none;
+  padding: 0;
+}
+
+.url-item {
+  padding: 1rem;
+  border-bottom: 1px solid #333;
+}
+
+.url-date {
+  font-size: 0.85rem;
+  color: #aaa;
+}
+
+.url-link {
+  display: block;
+  font-size: 1.1rem;
+  color: #90caf9;
+  text-decoration: none;
+  margin: 0.25rem 0;
+}
+
+.url-link:hover {
+  text-decoration: underline;
+}
+
+.delete-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.delete-button:hover {
+  background-color: #d32f2f;
+}
+
+@media (max-width: 600px) {
+  .container {
+    margin: 1rem;
+    padding: 0.5rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .url-item {
+    padding: 0.75rem;
+  }
+
+  .delete-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+}
+.url-domain {
+  font-size: 0.85em;
+  color: #8a99a8;
+}
