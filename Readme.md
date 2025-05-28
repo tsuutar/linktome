@@ -43,25 +43,44 @@
    npm install
    ```
 
-3. **環境変数ファイルを作成**
+3. **設定**
 
-- プロジェクトルートに .env ファイルを作成し、以下を記載
+- 環境変数ファイル(.env)をプロジェクトルートに作成し、以下を記載
+
   ```
   SHARE_PASSWORD=あなたの好きなパスワード
   ```
 
-1. **Prisma で DB を初期化**
+- サブディレクトリへ公開する場合は以下を設定
+  - .env
+    ```
+    NEXT_PUBLIC_BASE_PATH=/linktome
+    ```
+  - next.config.js
+    ```
+    module.exports = {
+      basePath: '/linktome',
+    }
+    ```
+
+4. **Prisma で DB を初期化**
 
    ```sh
-   npx prisma migrate dev --name init
+   npx prisma generate
+   ```
+
+5. **公開用にビルド**
+
+   ```sh
+   npm run build
    ```
 
 #### 起動手順
 
-1. **開発サーバーを起動**
+1. **サーバーを起動**
 
    ```sh
-   npm run dev
+   npm run start
    ```
 
 2. **PC から `http://<サーバーのアドレス>:3000/` にアクセス**
@@ -95,7 +114,7 @@
   - 入力: ショートカットの入力
   - コード内容
     - ```javascript
-      completion(document.url);
+      completion(location.href);
       ```
 - URL の内容を取得
   - URL: http://<サーバーのアドレス>:3000/api/submit
@@ -109,10 +128,18 @@
     - url: (2)の内容
 - 設定後、保存する
 
-1. **Safari の設定**
+4. **Safari の設定**
 
 - 画面下部の「共有」ボタン（四角から上矢印）をタップ
 - 必要に応じて「アクションを編集」をタップし、配置を変える
+
+5. **PC 上のサイトを保管する場合**
+
+- ブックマークレット
+
+```
+javascript:(()=>{function showToast(msg,bg='#333'){let t=document.createElement('div');t.textContent=msg;t.style.cssText='position:fixed;top:20px;left:20px;z-index:9999;background:'+bg+';color:#fff;padding:10px 20px;border-radius:6px;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,0.2);opacity:0.95;';document.body.appendChild(t);setTimeout(()=>{t.remove()},2500);}fetch('http://localhost:3000/api/submit',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer あなたのパスワード'},body:JSON.stringify({title:document.title,url:location.href})}).then(()=>showToast('送信しました','seagreen')).catch(e=>showToast('送信失敗','crimson'));})()
+```
 
 ## よくある質問
 

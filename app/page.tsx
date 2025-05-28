@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react';
 import './globals.css';
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 export default function Home() {
     //hook
     const [urls, setUrls] = useState([]);
@@ -17,7 +19,7 @@ export default function Home() {
     function handleLogin(e: React.FormEvent) {
         e.preventDefault();
         setError('');
-        fetch('/api/urls', {
+        fetch(`${basePath}/api/urls`, {
             headers: {
                 authorization: `Bearer ${inputPassword}`
             }
@@ -36,7 +38,7 @@ export default function Home() {
 
     // URLリストを取得
     const fetchUrls = () => {
-        fetch('/api/urls', {
+        fetch(`${basePath}/api/urls`, {
             headers: {
                 authorization: `Bearer ${password}`
             }
@@ -52,7 +54,7 @@ export default function Home() {
     // 削除
     async function handleDelete(id: number) {
         if (!window.confirm("削除しますか？")) return;
-        await fetch(`/api/delete?id=${id}`, {
+        await fetch(`${basePath}/api/delete?id=${id}`, {
             method: 'DELETE',
             headers: {
                 authorization: `Bearer ${password}`
