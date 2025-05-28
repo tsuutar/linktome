@@ -140,3 +140,4 @@ dist
 /prisma/dev.db-journal
 /prisma/*.sqlite
 /prisma/migrations/
+next.config.js
