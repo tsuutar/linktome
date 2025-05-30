@@ -11,7 +11,6 @@ export async function GET(req: NextRequest) {
 
   const urls = await prisma.sharedURL.findMany({
     orderBy: { createdAt: "desc" },
-    take: 100,
   });
   return NextResponse.json(urls);
 }
