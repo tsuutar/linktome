@@ -1,19 +1,44 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import './globals.css';
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
+interface SharedUrl {
+    id: number;
+    title: string;
+    url: string;
+    createdAt: string;
+}
+
 export default function Home() {
     //hook
-    const [urls, setUrls] = useState([]);
+    const [urls, setUrls] = useState<SharedUrl[]>([]);
     const [password, setPassword] = useState('');
     //他のuseState
     const [inputPassword, setInputPassword] = useState('');
     const [authorized, setAuthorized] = useState(false);
     const [error, setError] = useState('');
     const [keyword, setKeyword] = useState('');
+    const [lastModified, setLastModified] = useState<string | null>(null);
+    const lastModifiedRef = useRef<string | null>(null);
+    const [urlCount, setUrlCount] = useState<number>(0);
+    const urlCountRef = useRef(0);
 
+    useEffect(() => {
+        urlCountRef.current = urlCount;
+        lastModifiedRef.current = lastModified;
+    }, [urlCount, lastModified]);
+
+    function updateMeta(res: Response) {
+        const newLastModified = res.headers.get("Last-Modified");
+        const newUrlCount = Number(res.headers.get("X-Url-Count") || "0");
+        // メタデータを更新
+        setLastModified(newLastModified);
+        lastModifiedRef.current = newLastModified;
+        setUrlCount(newUrlCount);
+        urlCountRef.current = newUrlCount;
+    }
 
     // ログイン処理
     function handleLogin(e: React.FormEvent) {
@@ -26,6 +51,9 @@ export default function Home() {
         })
             .then(res => {
                 if (!res.ok) throw new Error('認証エラー');
+                const newLastModified = res.headers.get("Last-Modified");
+                const newUrlCount = Number(res.headers.get("X-Url-Count") || "0");
+                updateMeta(res);
                 return res.json();
             })
             .then(data => {
@@ -40,27 +68,37 @@ export default function Home() {
     const fetchUrls = () => {
         fetch(`${basePath}/api/urls`, {
             headers: {
-                authorization: `Bearer ${password}`
+                authorization: `Bearer ${password}`,
+                ...(lastModifiedRef.current ? { "If-Modified-Since": lastModifiedRef.current } : {}),
+                ...(urlCountRef.current ? { "X-Url-Count": urlCountRef.current.toString() } : {}),
             }
         })
             .then(res => {
+                if (res.status === 304) return null;
                 if (!res.ok) throw new Error('認証エラー');
+                updateMeta(res);
                 return res.json();
             })
-            .then(data => setUrls(data))
+            .then(data => {
+                if (data) setUrls(data);
+            })
             .catch(() => setError('パスワードが違います'));
     };
 
     // 削除
     async function handleDelete(id: number) {
         if (!window.confirm("削除しますか？")) return;
-        await fetch(`${basePath}/api/delete?id=${id}`, {
-            method: 'DELETE',
-            headers: {
-                authorization: `Bearer ${password}`
-            }
-        });
-        setUrls(urls.filter((u: any) => u.id !== id));
+        try {
+            await fetch(`${basePath}/api/delete?id=${id}`, {
+                method: 'DELETE',
+                headers: {
+                    authorization: `Bearer ${password}`
+                }
+            });
+            fetchUrls();
+        } catch {
+            setError('削除に失敗しました');
+        }
     }
 
     // TSV形式でダウンロード
@@ -84,7 +122,7 @@ export default function Home() {
     }
 
     // レンダリング用変数 キーワード絞り込み
-    const filteredUrls = urls.filter((u: any) => {
+    const filteredUrls = urls.filter((u: SharedUrl) => {
         if (!keyword) return true;
         const lower = keyword.toLowerCase();
         return (
